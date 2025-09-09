@@ -23,7 +23,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://127.0.0.1:8001")
-GOOGLE_REDIRECT_URI = f"{BACKEND_BASE_URL}/auth/google/callback"
+GOOGLE_REDIRECT_URI = "https://app.sustainable-house.com/auth/google/callback"
 
 # serializer for signing the state token
 serializer = URLSafeTimedSerializer(SECRET_KEY)
