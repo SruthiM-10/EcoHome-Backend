@@ -136,7 +136,7 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     if not code or not state:
         raise HTTPException(status_code=400, detail="Missing code or state from Google callback")
 
-    pritn("Started 4")
+    print("Started 4")
     # Verify the state token
     try:
         # The token is valid for 5 minutes
@@ -157,7 +157,7 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
         "code": code,
         "client_id": GOOGLE_CLIENT_ID,
         "client_secret": GOOGLE_CLIENT_SECRET,
-        "redirect_uri": INTERNAL_GOOGLE_REDIRECT_URI,
+        "redirect_uri": PUBLIC_GOOGLE_REDIRECT_URI,
         "grant_type": "authorization_code",
     }
 
