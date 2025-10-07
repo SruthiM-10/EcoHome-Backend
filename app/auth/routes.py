@@ -100,8 +100,10 @@ def google_connect(current_user: User = Depends(get_current_user)):
     """
     # Create a state token to prevent CSRF attacks.
     # We sign the user's email into the token.
+    print("Started 1")
     state = serializer.dumps(current_user.email)
-    
+
+    print("Started 2")
     # The 'scope' defines what permissions we are asking for.
     scope = "https://www.googleapis.com/auth/sdm.service"
     
@@ -126,24 +128,29 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     Handles the callback from Google. It exchanges the authorization code
     for an access token and refresh token, and saves them for the user.
     """
+
+    print("Started 3")
     code = request.query_params.get('code')
     state = request.query_params.get('state')
 
     if not code or not state:
         raise HTTPException(status_code=400, detail="Missing code or state from Google callback")
 
+    pritn("Started 4")
     # Verify the state token
     try:
         # The token is valid for 5 minutes
         user_email = serializer.loads(state, max_age=300) 
     except (SignatureExpired, BadTimeSignature):
         raise HTTPException(status_code=400, detail="Invalid or expired state token.")
-    
+
+    print("Started 5")
     # Get the user from the database
     user = db.query(User).filter(User.email == user_email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User specified in state token not found.")
 
+    print("Started 6")
     # Exchange the authorization code for tokens
     token_url = "https://oauth2.googleapis.com/token"
     token_data = {
@@ -153,19 +160,25 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
         "redirect_uri": INTERNAL_GOOGLE_REDIRECT_URI,
         "grant_type": "authorization_code",
     }
-    
+
     async with httpx.AsyncClient() as client:
         response = await client.post(token_url, data=token_data)
+
+    print("Started 7")
 
     if response.status_code != 200:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Failed to fetch token: {response.json()}",
         )
-    
+
+    print("Started 8")
+
     token_json = response.json()
     google_access_token = token_json.get("access_token")
     google_refresh_token = token_json.get("refresh_token")
+
+    print("Started 9")
 
     # Save the tokens to the user's record in the database
     user.google_access_token = google_access_token
@@ -173,6 +186,8 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     # Only update it if a new one is provided.
     if google_refresh_token:
         user.google_refresh_token = google_refresh_token
+
+    print("Started 10")
         
     db.commit()
 
