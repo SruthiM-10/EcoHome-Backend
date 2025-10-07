@@ -104,9 +104,8 @@ def google_connect(current_user: User = Depends(get_current_user)):
 
     print("Started 2")
     # The 'scope' defines what permissions we are asking for.
-    # scope = "https://www.googleapis.com/auth/sdm.service"
-    scope = "openid email profile"
-    
+    scope = "https://www.googleapis.com/auth/sdm.service"
+
     # Construct the authorization URL
     google_auth_url = (
         f"https://accounts.google.com/o/oauth2/v2/auth?"
