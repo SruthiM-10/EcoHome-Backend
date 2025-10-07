@@ -24,8 +24,7 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://127.0.0.1:8001")
 PUBLIC_URL = os.getenv("PUBLIC_URL", "https://app.sustainable-house.com")
-PUBLIC_GOOGLE_REDIRECT_URI = f"{PUBLIC_URL}/auth/google/callback"
-INTERNAL_GOOGLE_REDIRECT_URI = f"{BACKEND_BASE_URL}/auth/google/callback"
+GOOGLE_REDIRECT_URI = f"{PUBLIC_URL}/auth/google/callback"
 
 # serializer for signing the state token
 serializer = URLSafeTimedSerializer(SECRET_KEY)
@@ -105,14 +104,15 @@ def google_connect(current_user: User = Depends(get_current_user)):
 
     print("Started 2")
     # The 'scope' defines what permissions we are asking for.
-    scope = "https://www.googleapis.com/auth/sdm.service"
+    # scope = "https://www.googleapis.com/auth/sdm.service"
+    scope = "openid email profile"
     
     # Construct the authorization URL
     google_auth_url = (
         f"https://accounts.google.com/o/oauth2/v2/auth?"
         f"response_type=code&"
         f"client_id={GOOGLE_CLIENT_ID}&"
-        f"redirect_uri={PUBLIC_GOOGLE_REDIRECT_URI}&"
+        f"redirect_uri={GOOGLE_REDIRECT_URI}&"
         f"scope={scope}&"
         f"state={state}&"
         f"access_type=offline&" # Important to get a refresh_token
@@ -157,7 +157,7 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
         "code": code,
         "client_id": GOOGLE_CLIENT_ID,
         "client_secret": GOOGLE_CLIENT_SECRET,
-        "redirect_uri": PUBLIC_GOOGLE_REDIRECT_URI,
+        "redirect_uri": GOOGLE_REDIRECT_URI,
         "grant_type": "authorization_code",
     }
 
