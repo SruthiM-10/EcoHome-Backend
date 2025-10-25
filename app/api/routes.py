@@ -1,4 +1,4 @@
-#app/api/Thermostat
+#app/api/routes.py
 
 import os
 from fastapi import APIRouter, Depends, HTTPException
