@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.date import DateTrigger
 from app.db.models import Thermostat
 import re
-from app.db.database import get_db
+from app.db.database import db_context
 from app.utils.calendar_utils import get_upcoming_events
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
@@ -26,7 +26,7 @@ def preheat(event_summary):
     #     logger.error(f"[❌] Failed to call thermostat API: {e}")
 
 def reset(id, away, time_away, end_time= datetime.utcnow()):
-    with get_db() as db:
+    with db_context() as db:
         row = db.query(Thermostat).filter(Thermostat.id == id).first() # later add based on device name
         if not row:
             raise HTTPException(status_code=404, detail="User not found")
@@ -42,7 +42,7 @@ def reset(id, away, time_away, end_time= datetime.utcnow()):
                 sync_and_schedule(id)
 
 def override(id, away, time_away, event_end = False, end_time= datetime.utcnow()):
-    with get_db() as db:
+    with db_context() as db:
         row = db.query(Thermostat).filter(Thermostat.id == id).first() # later add based on device name
         if not row:
             raise HTTPException(status_code=404, detail="User not found")

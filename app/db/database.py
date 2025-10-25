@@ -23,10 +23,11 @@ Base= declarative_base()
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-@contextmanager
 def get_db():
     db= SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+db_context = contextmanager(get_db)
