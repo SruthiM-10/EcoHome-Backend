@@ -27,3 +27,7 @@ itsdangerous
 python-multipart
 
 apscheduler
+python-dateutil
+google-auth
+google-auth-oauthlib
+google-api-python-client
