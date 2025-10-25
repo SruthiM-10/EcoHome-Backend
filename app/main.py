@@ -9,5 +9,6 @@ app = FastAPI()
 # This line creates all tables (only run once)
 Base.metadata.create_all(bind=engine)
 
-# app.include_router(auth_routes.router, prefix="/auth", tags=["Auth"])
-app.include_router(auth_routes.router)
+app.include_router(auth_routes.router, prefix="/auth", tags=["Auth"])
+app.include_router(auth_routes.router, prefix="/api", tags=["API"])
+# app.include_router(auth_routes.router)
