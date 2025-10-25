@@ -15,5 +15,12 @@ class TokenResponse(BaseModel):
 class UserOverride(BaseModel):
     away: bool
     id: int
-   # device_name: str
+    device_name: str
     time: int
+
+class ApplianceInput(BaseModel):
+    appliance: str
+
+class ThermostatDevice(BaseModel):
+    id: int
+    device_name: str
