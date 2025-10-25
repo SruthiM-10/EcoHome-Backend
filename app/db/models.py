@@ -13,3 +13,13 @@ class User(Base):
     # These columns will store the tokens from Google
     google_access_token = Column(String, nullable=True)
     google_refresh_token = Column(String, nullable=True)
+
+class Thermostat(Base):
+    __tablename__ = "thermostat_status"
+
+    id = Column(Integer, primary_key= True, index = True)
+    device_name = Column(String, index= True, nullable= True)
+    away = Column(Boolean, nullable=True)
+    last_end_time = Column(String, nullable=True)
+    preheat_time = Column(String, nullable=True)
+    user_override = Column(String, nullable=True)
