@@ -11,3 +11,9 @@ class UserLogin(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+class UserOverride(BaseModel):
+    away: bool
+    id: int
+   # device_name: str
+    time: int
