@@ -5,7 +5,7 @@ from apscheduler.triggers.date import DateTrigger
 from app.db.models import Thermostat
 import re
 from app.db.database import get_db
-from calendar_utils import get_upcoming_events
+from app.utils.calendar_utils import get_upcoming_events
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
