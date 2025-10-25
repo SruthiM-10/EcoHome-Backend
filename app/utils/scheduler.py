@@ -6,7 +6,7 @@ from app.db.models import Thermostat
 import re
 from app.db.database import get_db
 from app.utils.calendar_utils import get_upcoming_events
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
 # THERMOSTAT_API_URL = "http://localhost:3000/setMode"
@@ -25,33 +25,35 @@ def preheat(event_summary):
     # except Exception as e:
     #     logger.error(f"[❌] Failed to call thermostat API: {e}")
 
-def reset(id, away, time_away, end_time= datetime.utcnow(), db: Session = Depends(get_db)):
-    row = db.query(Thermostat).filter(Thermostat.id == id).first() # later add based on device name
-    if not row:
-        raise HTTPException(status_code=404, detail="User not found")
+def reset(id, away, time_away, end_time= datetime.utcnow()):
+    with get_db() as db:
+        row = db.query(Thermostat).filter(Thermostat.id == id).first() # later add based on device name
+        if not row:
+            raise HTTPException(status_code=404, detail="User not found")
 
-    user_override = row.user_override
-    if not user_override:
+        user_override = row.user_override
+        if not user_override:
+            row.away = away
+            row.time_away = time_away
+            row.user_override = user_override
+            row.last_end_time = end_time
+            db.commit()
+            if not away:
+                sync_and_schedule(id)
+
+def override(id, away, time_away, event_end = False, end_time= datetime.utcnow()):
+    with get_db() as db:
+        row = db.query(Thermostat).filter(Thermostat.id == id).first() # later add based on device name
+        if not row:
+            raise HTTPException(status_code=404, detail="User not found")
+
         row.away = away
         row.time_away = time_away
-        row.user_override = user_override
-        row.last_end_time = end_time
+        row.user_override = not event_end
+        row.last_end_time = end_time.isoformat()
         db.commit()
-        if not away:
+        if event_end:
             sync_and_schedule(id)
-
-def override(id, away, time_away, event_end = False, end_time= datetime.utcnow(), db: Session = Depends(get_db)):
-    row = db.query(Thermostat).filter(Thermostat.id == id).first() # later add based on device name
-    if not row:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    row.away = away
-    row.time_away = time_away
-    row.user_override = not event_end
-    row.last_end_time = end_time.isoformat()
-    db.commit()
-    if event_end:
-        sync_and_schedule(id)
 
 def schedule_event_preheat(id, start_time, end_time, title):
     preheat_time = end_time - timedelta(minutes=30) # TODO: calculate time delta with different function with energy calculations

@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from dotenv import load_dotenv
+from contextlib import contextmanager
 
 # load_dotenv()
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), '..', '.env'))
@@ -22,6 +23,7 @@ Base= declarative_base()
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
+@contextmanager
 def get_db():
     db= SessionLocal()
     try:
