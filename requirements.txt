@@ -26,3 +26,4 @@ httpx
 itsdangerous
 python-multipart
 
+apscheduler
