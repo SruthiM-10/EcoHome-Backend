@@ -51,7 +51,7 @@ def add_thermostat(body: ThermostatDevice, db: Session = Depends(get_db)):
     existing = db.query(Thermostat).filter(Thermostat.device_name == body.device_name).first()
     if existing:
         raise HTTPException(status_code=400, detail="Device already registered")
-    device = Thermostat(id=body.id, name=body.device_name)
+    device = Thermostat(id=body.id, device_name=body.device_name)
     db.add(device)
     db.commit()
     db.refresh(device)
