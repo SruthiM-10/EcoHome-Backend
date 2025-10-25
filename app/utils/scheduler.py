@@ -69,7 +69,7 @@ def schedule_override(id, start_time, end_time, away):
     time_away = int((end_time - start_time).total_seconds() // 60)
     preheat_time = end_time - timedelta(minutes=min(30, time_away))  # TODO: calculate time delta with different function with energy calculations
 
-    override(away, time_away, end_time)
+    override(id, away, time_away, end_time)
     if preheat_time != end_time and away:
         scheduler.add_job(preheat, DateTrigger(run_date=preheat_time), args=['Override'])
     scheduler.add_job(override, DateTrigger(run_date=end_time), args=[id, False, 0, True])
