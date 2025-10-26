@@ -24,3 +24,7 @@ class ApplianceInput(BaseModel):
 class ThermostatDevice(BaseModel):
     id: int
     device_name: str
+
+class RecipesInput(BaseModel):
+    ingredients: list
+    restrictions: list
