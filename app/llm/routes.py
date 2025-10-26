@@ -3,13 +3,7 @@
 from fastapi import APIRouter
 from app.db.schemas import ApplianceInput
 import requests
-from bs4 import BeautifulSoup
 import re
-import urllib.parse
-from ddgs import DDGS
-import time
-import random
-import serpapi
 import os
 
 
