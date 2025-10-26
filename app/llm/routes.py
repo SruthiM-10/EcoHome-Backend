@@ -56,11 +56,13 @@ def find_product_listings(query):
             print(url)
             listings.append({
                 "title": page.get("title"),
-                "url": url,
-                "price": page.get("price"),
-                "merchant": page.get("merchant"),
-                "rating": page.get("rating"),
-                "reviews": page.get("reviews")
+                "info": {
+                    "url": url,
+                    "price": page.get("price"),
+                    "merchant": page.get("merchant"),
+                    "rating": page.get("rating"),
+                    "reviews": page.get("reviews")
+                }
             })
         print(url)
 
