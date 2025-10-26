@@ -46,6 +46,7 @@ def recipes(body: RecipesInput):
                     recipes_list.append({
                         "title": r.get("title"),
                         "image": r.get("image"),
+                        "url": r.get("sourceUrl"),
                         "nutrients": {"calories": calories, "protein": protein, "fat": fat},
                         "instructions": [s["step"] for s in r.get("analyzedInstructions", [{}])[0].get("steps", [])]
                     })
