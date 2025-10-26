@@ -21,6 +21,7 @@ def recipes(body: RecipesInput):
         "includeIngredients": ",".join(ingredients),
         "diet": ",".join(restrictions),
         "addRecipeInformation": "true",
+        "addRecipeNutrition": "true",
         "number": 5,
     }
 
@@ -31,10 +32,20 @@ def recipes(body: RecipesInput):
 
         recipes_list = []
         for r in results:
+            nutrients_list = r.get("nutrition", {}).get("nutrients", [])
+            # Extract key nutrients
+            calories = next((n["amount"] for n in nutrients_list if n["name"] == "Calories"), None)
+            protein = next((n["amount"] for n in nutrients_list if n["name"] == "Protein"), None)
+            fat = next((n["amount"] for n in nutrients_list if n["name"] == "Fat"), None)
+
             recipes_list.append({
                 "title": r.get("title"),
                 "image": r.get("image"),
-                "nutrients": r.get("nutrition", {}).get("nutrients", []),
+                "nutrients": {
+                    "calories": calories,
+                    "protein": protein,
+                    "fat": fat,
+                },
                 "instructions": [s["step"] for s in r.get("analyzedInstructions", [{}])[0].get("steps", [])],
             })
 
