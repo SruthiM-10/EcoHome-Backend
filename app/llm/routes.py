@@ -68,7 +68,11 @@ def getListings(body: ApplianceInput, db: Session = Depends(get_db)):
     if not existing:
         raise HTTPException(status_code=400, detail="Appliance has not yet been generated")
 
-    return json.dumps(pickle.loads(existing.data))
+    obj = pickle.loads(existing.data)
+    if hasattr(obj, "to_dict"):
+        obj = obj.to_dict(orient="records")  # list of dicts
+
+    return obj
 
 def final_processing(listings):
     final_listings = []
