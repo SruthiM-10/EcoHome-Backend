@@ -24,7 +24,7 @@ import pickle
 
 router = APIRouter(prefix="/llm", tags=["llm"])
 
-os.environ["SERP_API_KEY"] = "a44490072b649f025cfa40e7dbf1ea25"
+# os.environ["SERP_API_KEY"] = "a44490072b649f025cfa40e7dbf1ea25"
 
 class FeaturesItem(BaseModel):
     energy: str

@@ -5,7 +5,7 @@ from typing import List, Optional
 import os
 import re
 
-os.environ["OPENAI_API_KEY"] = "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"
+# os.environ["OPENAI_API_KEY"] = "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"
 
 def data_cleaning(text: str):
     """Removes a list of specific phrases from the text."""

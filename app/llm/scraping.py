@@ -174,7 +174,7 @@ def try_selenium(BASE_HEADERS, url):
     try:
         options = webdriver.ChromeOptions()
         options.add_argument("start-maximized")
-        # options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
         options.add_argument("--user-agent=Mozilla/5.0")
