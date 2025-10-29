@@ -1,6 +1,6 @@
 #app/llm/routes.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from langchain_core.messages import SystemMessage
 from pydantic import BaseModel
 from langchain_openai import ChatOpenAI
@@ -15,6 +15,7 @@ import pandas as pd
 from app.llm.scraping import try_selenium
 from app.llm.data_processing import extract_features, data_cleaning, compare_features, clean_features
 import re
+import json
 
 import os
 from sqlalchemy.orm import Session
@@ -36,7 +37,11 @@ class FeaturesItem(BaseModel):
     compatibility: str
     policyAlignment: str
 
-@router.post("/generateListings")
+@router.post("/startGeneratingListings")
+def startGeneratingListings(background_tasks: BackgroundTasks, body: ApplianceInput):
+    background_tasks.add_task(generateListings, body)
+    return {"status": "Successfully started to generate listings!"}
+
 def generateListings(body: ApplianceInput, db: Session = Depends(get_db)):
     existing = db.query(Listing).filter(Listing.appliance == body.appliance).first()
     if existing:
@@ -63,7 +68,7 @@ def getListings(body: ApplianceInput, db: Session = Depends(get_db)):
     if not existing:
         raise HTTPException(status_code=400, detail="Appliance has not yet been generated")
 
-    return pickle.loads(existing.data)
+    return json.dumps(pickle.loads(existing.data))
 
 def final_processing(listings):
     final_listings = []
@@ -257,14 +262,14 @@ def find_product_listings(query):
 
 # Example use
 if __name__ == "__main__":
-    # BASE_HEADERS = {
-    #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-    #     "Accept-Language": "en-US,en;q=0.9",
-    # }
-    # text = try_selenium(BASE_HEADERS, "https://www.homedepot.com/p/Whirlpool-3-8-3-9-cu-ft-Top-Load-Washer-in-White-with-2-in-1-Removable-Agitator-WTW4957PW/326960013")
-    # clean_text = "\n".join(line.strip() for line in text.split() if line.strip())
-    # cleaned_text = data_cleaning(clean_text)
-    # print(cleaned_text)
+    BASE_HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+    text = try_selenium(BASE_HEADERS, "https://www.homedepot.com/p/Whirlpool-3-8-3-9-cu-ft-Top-Load-Washer-in-White-with-2-in-1-Removable-Agitator-WTW4957PW/326960013")
+    clean_text = "\n".join(line.strip() for line in text.split() if line.strip())
+    cleaned_text = data_cleaning(clean_text)
+    print(cleaned_text)
     #
     # features = extract_features(cleaned_text)
 
