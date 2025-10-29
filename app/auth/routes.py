@@ -3,16 +3,15 @@
 import os
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, status, Request
-from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 
 from app.db.database import get_db
-from app.db.schemas import UserCreate as RegisterRequest, UserLogin as LoginRequest
+from app.db.schemas import UserCreate as RegisterRequest
 from app.db.models import User
-from app.utils.token import create_access_token, create_email_token, decode_token
-from app.utils.hashing import hash_password, verify_password
-from app.utils.emailer import send_email
+from app.auth.token import create_access_token, create_email_token, decode_token
+from app.auth.hashing import hash_password, verify_password
+from app.auth.emailer import send_email
 from app.auth.security import get_current_user  # We will create this dependency
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse

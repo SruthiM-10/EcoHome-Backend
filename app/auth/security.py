@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.db.models import User
-from app.utils.token import decode_token
+from app.auth.token import decode_token
 
 # This scheme will look for a token in the "Authorization" header
 # with the value "Bearer <token>"

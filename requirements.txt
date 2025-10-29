@@ -31,3 +31,14 @@ python-dateutil
 google-auth
 google-auth-oauthlib
 google-api-python-client
+
+langchain
+langchain_core
+langchain_openai
+beautifulsoup4
+pandas
+selenium
+webdriver-manager
+pypdf2
+requests-html
+selenium-stealth

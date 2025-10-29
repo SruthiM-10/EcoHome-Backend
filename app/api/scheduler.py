@@ -5,9 +5,8 @@ from apscheduler.triggers.date import DateTrigger
 from app.db.models import Thermostat
 import re
 from app.db.database import db_context
-from app.utils.calendar_utils import get_upcoming_events
-from fastapi import APIRouter, HTTPException
-from sqlalchemy.orm import Session
+from app.api.calendar_utils import get_upcoming_events
+from fastapi import HTTPException
 
 # THERMOSTAT_API_URL = "http://localhost:3000/setMode"
 

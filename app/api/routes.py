@@ -7,7 +7,7 @@ from app.db.models import Thermostat
 from app.db.schemas import UserOverride, ThermostatDevice
 from app.db.database import get_db
 from datetime import timedelta, datetime as dt
-from app.utils.scheduler import schedule_override
+from app.api.scheduler import schedule_override
 import requests
 
 router = APIRouter(prefix="/api", tags=["api"])
