@@ -42,5 +42,6 @@ webdriver-manager
 pypdf2
 requests-html
 undetected-chromedriver
+setuptools
 
 psycopg2-binary
