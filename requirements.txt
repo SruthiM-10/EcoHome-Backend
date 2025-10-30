@@ -41,8 +41,6 @@ selenium
 webdriver-manager
 pypdf2
 requests-html
-selenium-stealth
 undetected-chromedriver
 
 psycopg2-binary
-setup-tools
