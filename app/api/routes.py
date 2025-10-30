@@ -144,7 +144,7 @@ def get_saved_energy(body: TempInput, db: Session = Depends(get_db)):
     if not existing_Thermostat:
         raise HTTPException(status_code=400, detail="No device already registered under this id")
 
-    return existing_Thermostat.energy_saved
+    return {"energy": existing_Thermostat.energy_saved}
 
 @router.post("/get_saved_cost")
 def get_saved_cost(body: TempInput, db: Session = Depends(get_db)):
@@ -152,4 +152,4 @@ def get_saved_cost(body: TempInput, db: Session = Depends(get_db)):
     if not existing_Thermostat:
         raise HTTPException(status_code=400, detail="No device already registered under this id")
 
-    return existing_Thermostat.cost_saved
+    return {"cost": existing_Thermostat.cost_saved}
