@@ -40,7 +40,7 @@ def sync_thermostat(id: int, db: Session = Depends(get_db)):
             # set_nest_temperature_f(
             #     os.getenv("NEST_DEVICE_NAME"), os.getenv("NEST_ACCESS_TOKEN"), outside_f
             # )
-            row.preheat_time = outside_f
+            row.outside_temp = outside_f
             db.commit()
             db.refresh(row)
             return {"away": True, "message": f"Nest should be set to outside temp - {outside_f}. The next event will end on {last_end_time}."}
