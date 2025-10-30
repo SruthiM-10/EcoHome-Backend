@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, LargeBinary
+from sqlalchemy import Column, String, Integer, Boolean, LargeBinary, Float
 from app.db.database import Base
 # from sqlalchemy import uniqueconstraint
 
@@ -22,8 +22,10 @@ class Thermostat(Base):
     away = Column(Boolean, nullable=True)
     last_end_time = Column(String, nullable=True)
     preheat_time = Column(String, nullable=True)
+    outside_temp = Column(Float, nullable=True)
     user_override = Column(String, nullable=True)
-
+    energy_saved = Column(Float, nullable=True)
+    cost_saved = Column(Float, nullable=True)
 
 class Listing(Base):
     __tablename__ = "listings"

@@ -28,3 +28,6 @@ class ThermostatDevice(BaseModel):
 class RecipesInput(BaseModel):
     ingredients: list
     restrictions: list
+
+class TempInput(BaseModel):
+    id: int
