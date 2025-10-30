@@ -5,11 +5,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 import io
 import PyPDF2
-from selenium_stealth import stealth
 from app.llm.data_processing import data_cleaning
 import undetected_chromedriver as uc
 
