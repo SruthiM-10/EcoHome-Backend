@@ -34,6 +34,8 @@ def sync_thermostat(id: int, db: Session = Depends(get_db)):
 
         away = row.away
         last_end_time = row.last_end_time
+        energy_saved = row.energy_saved if row.energy_saved is not None else 0.0
+        cost_saved = row.cost_saved if row.cost_saved is not None else 0.0
         if away:
             lat, lon = os.getenv("LAT"), os.getenv("LON")
             outside_f = get_outdoor_temp_f(lat, lon, os.getenv("OWM_API_KEY"))
@@ -43,9 +45,21 @@ def sync_thermostat(id: int, db: Session = Depends(get_db)):
             row.outside_temp = outside_f
             db.commit()
             db.refresh(row)
-            return {"away": True, "message": f"Nest should be set to outside temp - {outside_f}. The next event will end on {last_end_time}."}
+            #return {"away": True, "message": f"Nest should be set to outside temp - {outside_f}. The next event will end on {last_end_time}."}
+            return {
+                "away": True,
+                "message": f"Nest should be set to outside temp - {outside_f}. The next event will end on {last_end_time}.",
+                "energy_saved": energy_saved,  # Added
+                "cost_saved": cost_saved  # Added
+            }
         else:
-            return {"away": False, "message": "User appears to be home."}
+            #return {"away": False, "message": "User appears to be home."}
+            return {
+                "away": False,
+                "message": "User appears to be home.",
+                "energy_saved": energy_saved,  # Added
+                "cost_saved": cost_saved  # Added
+            }
     except Exception as e:
         return {"error": str(e)}
 
