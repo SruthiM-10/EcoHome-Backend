@@ -83,7 +83,7 @@ def get_outdoor_temp_f(lat: str, lon: str, api_key: str) -> float:
     resp.raise_for_status()
     return resp.json()["main"]["temp"]
 
-@router.get("/set_thermostat_temp")
+@router.post("/set_thermostat_temp")
 def set_nest_temperature_c(body: TempInput, db: Session = Depends(get_db)):
     existing_Thermostat = db.query(Thermostat).filter(Thermostat.id == body.id).first()
     if not existing_Thermostat:
@@ -122,7 +122,7 @@ def set_nest_temperature_c(body: TempInput, db: Session = Depends(get_db)):
 
     resp = requests.post(set_temp_url, headers=headers, json=payload)
     if resp.status_code == 200:
-        return resp.json()
+        return {"message": "Thermostat is now set successfully"}
     else:
         raise HTTPException(status_code=resp.status_code, detail=resp.text)
 
