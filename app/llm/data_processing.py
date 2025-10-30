@@ -4,8 +4,9 @@ from langchain_openai import ChatOpenAI
 from typing import List, Optional
 import os
 import re
+import requests
 
-# os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 
 def data_cleaning(text: str):
     """Removes a list of specific phrases from the text."""
@@ -157,6 +158,7 @@ Compare the information for each appliance and rank the appliances in ascending 
     - The appliances that have the best {metric} would have the largest rank.
     For example, if the metric is price, energy, or otherResourcesUse, you should rank it higher if the value is low and vice versa.
     If the metric is durability, quality, policyAlignment, etc., you should rank it lower if the value is low and vice versa.
+    - Appliances where the {metric} is "N/A" should have lowest ranks.
     
 Then for each appliance return the following:
     1. their rank (from 1 to N) based on only the information given. No two appliances should have same rank.
@@ -239,3 +241,45 @@ Return as ONLY a JSON array.
     except Exception as error:
         print(f"Error extracting features: {error}")
     return results
+
+def fill_url(title):
+    total_features = []
+    count = 0
+    BASE_HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+    url = "https://api.serpstack.com/search"
+
+    count += 1
+
+    params = {
+        "access_key": os.getenv("SERP_API_KEY"),
+        "query": title,
+        "location": "San Jose, California, United States",
+        "num": 1,  # grab a few more
+    }
+    try:
+        r = requests.get(url, params=params, headers=BASE_HEADERS, timeout=20)
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return ""
+    if r.status_code != 200:
+        return ""
+
+    j = r.json()
+    results = j.get("organic_results") or []
+    final_url = ""
+    for result in results:
+        link = result.get('url')
+        bad_markers = "wiki|review|report|helpowl|guide|html|blog"
+        product_like = re.compile(
+            r"(product|/p/|/dp/|item|sku)", re.I)
+
+        if re.search(bad_markers, link):
+            continue
+        if re.search(product_like, link):
+            final_url = link
+            break
+
+    return final_url
