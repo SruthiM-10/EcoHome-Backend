@@ -98,14 +98,28 @@ def set_nest_temperature_c(body: TempInput, db: Session = Depends(get_db)):
 
     # Construct the full device name
     full_device_name = f"enterprises/{Project_ID}/devices/{device_id}"
-    target_temp_c = existing_Thermostat.preheat_time  # e.g., 22°C
+    #target_temp_c = existing_Thermostat.preheat_time  # e.g., 22°C
+    target_temp_c = float(existing_Thermostat.preheat_time) if existing_Thermostat.preheat_time else None
+    if target_temp_c is None:
+        raise ValueError("Target temperature (preheat_time) is missing or invalid.")
 
-    current_temp = get_thermostat_temp(full_device_name, access_token)
-    current_temp = current_temp["traits"]["sdm.devices.traits.Temperature"]["ambientTemperatureCelsius"]
+    # current_temp = get_thermostat_temp(full_device_name, access_token)
+    # current_temp = current_temp["traits"]["sdm.devices.traits.Temperature"]["ambientTemperatureCelsius"]
+    current_temp_response = get_thermostat_temp(full_device_name, access_token)
+    current_temp_c = current_temp_response["traits"]["sdm.devices.traits.Temperature"]["ambientTemperatureCelsius"]
+    outdoor_temp_f = existing_Thermostat.outside_temp
 
-    energy_saved, cost_saved = estimate_energy_cost_savings(current_temp, target_temp_c, target_temp_c, 20, 0.15)
-    existing_Thermostat.energy_saved = energy_saved
-    existing_Thermostat.cost_saved = cost_saved
+    # energy_saved, cost_saved = estimate_energy_cost_savings(current_temp, target_temp_c, target_temp_c, 20, 0.15)
+    if outdoor_temp_f is None:
+        energy_saved = 0.0
+        cost_saved = 0.0
+    else:
+        outdoor_temp_c = (outdoor_temp_f - 32) * 5 / 9
+        energy_saved, cost_saved = estimate_energy_cost_savings(current_temp_c,target_temp_c,outdoor_temp_c,20,0.15)
+    #existing_Thermostat.energy_saved = energy_saved
+   # existing_Thermostat.cost_saved = cost_saved
+    existing_Thermostat.energy_saved = float(energy_saved)
+    existing_Thermostat.cost_saved = float(cost_saved)
     db.commit()
     db.refresh(existing_Thermostat)
 
@@ -144,7 +158,8 @@ def get_saved_energy(body: TempInput, db: Session = Depends(get_db)):
     if not existing_Thermostat:
         raise HTTPException(status_code=400, detail="No device already registered under this id")
 
-    return {"energy": existing_Thermostat.energy_saved}
+    #return {"energy": existing_Thermostat.energy_saved}
+    return {"energy": existing_Thermostat.energy_saved or 0.0}
 
 @router.post("/get_saved_cost")
 def get_saved_cost(body: TempInput, db: Session = Depends(get_db)):
@@ -152,4 +167,5 @@ def get_saved_cost(body: TempInput, db: Session = Depends(get_db)):
     if not existing_Thermostat:
         raise HTTPException(status_code=400, detail="No device already registered under this id")
 
-    return {"cost": existing_Thermostat.cost_saved}
+    #return {"cost": existing_Thermostat.cost_saved}
+    return {"cost": existing_Thermostat.cost_saved or 0.0}
