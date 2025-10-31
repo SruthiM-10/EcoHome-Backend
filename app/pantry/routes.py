@@ -6,7 +6,7 @@ import requests
 import re
 import os
 
-SPOONACULAR_API_KEY = "ed53ed3517484f159d2964f45cab8cf1"  # 🔑 Replace with your API key
+SPOONACULAR_API_KEY = ""  # enter APi key
 SPOONACULAR_URL = "https://api.spoonacular.com/recipes/complexSearch"
 
 router = APIRouter(prefix="/pantry", tags=["pantry"])
