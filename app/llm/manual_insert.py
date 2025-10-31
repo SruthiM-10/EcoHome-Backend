@@ -3,7 +3,7 @@ from app.llm.routes import unit_test
 import pickle
 
 def manual_insert(appliance_name):
-    conn = psycopg2.connect("postgresql://postgres:IxjRlZKGSFvwhqxxmNjyOCcVFuTdXMIi@shinkansen.proxy.rlwy.net:39301/railway")
+    conn = psycopg2.connect("") # put database url
 
     with open("/Users/sruthi/PycharmProjects/EcoHome-Backend/app/llm/final_listings.pkl", "rb") as f:
         pickled_bytes = f.read()
@@ -19,8 +19,7 @@ def manual_insert(appliance_name):
     conn.close()
 
 def manual_update(appliance_name):
-    conn = psycopg2.connect(
-        "postgresql://postgres:IxjRlZKGSFvwhqxxmNjyOCcVFuTdXMIi@shinkansen.proxy.rlwy.net:39301/railway")
+    conn = psycopg2.connect("") # fill database url
 
     with open("/Users/sruthi/PycharmProjects/EcoHome-Backend/app/llm/final_listings.pkl", "rb") as f:
         pickled_bytes = f.read()
